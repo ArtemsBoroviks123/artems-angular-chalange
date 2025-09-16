@@ -1,0 +1,47 @@
+<div class="grid md:grid-cols-2">
+<form [formGroup]="form" class="p-8">
+    <h2 class="text-xl font-bold text-blue-500">Voertuiginformatie opzoeken</h2>
+
+    <!-- SELECT VEHICLE TYPE-->
+    <label class="block mt-4">
+      <span class="text-gray-700">Van welk type voertuig wilt u voertuiginformatie opzoeken?</span>
+      <select formControlName="vechicleType" class="block w-full mt-1 rounded-md bg-gray-100 border-transparent focus:border-gray-500 focus:bg-white focus:ring-0" name="vehicle-type">
+        <option value="" disabled selected>Select Vehicle Type</option>
+        <option *ngFor="let type of vehicleTypes" [value]="type">
+          {{ type }}
+        </option>
+      </select>
+    </label>
+
+    <!-- SELECT VEHICLE SUBTYPE-->
+    <label class="block mt-4">
+      <span class="text-gray-700">Welk type [auto/motor/brommer] hebt u?</span>
+      <select [class.disable]="getSubTypes((vehicleType$ | async)).length === 0" formControlName="vechicleSubType" class="block w-full mt-1 rounded-md bg-gray-100 border-transparent focus:border-gray-500 focus:bg-white focus:ring-0" name="vehicle-subtype">
+        <option value="" disabled selected>Select Vehicle SubType</option>
+        <option *ngFor="let subType of getSubTypes(vehicleType$ | async)" [value]="subType">
+          {{ subType }}
+        </option>
+      </select>
+    </label>
+
+    <!-- INPUT LICENSE PLATE -->
+    <label class="block mt-4">
+      <span class="text-gray-700">Vul het kenteken van uw [auto/motor/brommer] in.</span>
+      <input licensePlateFormat formControlName="licencePlate"  type="text" class="mt-1 block w-full rounded-md bg-yellow-400 border-red-400 focus:border-gray-500 focus:bg-yellow-300 focus:ring-0" name="kenteken" placeholder="Bijvoorbeeld AA-BB-12">
+      <div *ngIf="!IsLicencePlateValid" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mt-2" role="alert">
+        <div class="font-bold">Oeps, het ingevoerde kenteken is niet geldig.</div>
+        <div class="block sm:inline">Gebruik het volgende formaat AA-12-BB.</div>
+      </div>
+    </label>
+
+    <div class="mt-4">
+      <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" type="submit" (click)="onSubmit()" [disabled]="form.invalid">
+        Verzenden
+      </button>
+      <div *ngIf="form.invalid" class="text-red-700">Vul alle waardes correct in.</div>
+    </div>
+  </form>
+  <picture>
+    <img [src]="getImgLink(vehicleType$ | async)" alt="auto" class="object-cover h-full w-full">
+  </picture>
+</div>
